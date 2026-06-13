@@ -29,6 +29,8 @@ It combines:
 
 ## 🏗️ Architecture
 
+![Architecture Diagram](architecture_diagram.png)
+
 ---
 
 ## ⬡ Agentic Pipeline
