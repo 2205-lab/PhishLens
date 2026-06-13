@@ -124,7 +124,7 @@ PhishLens/
 │   ├── content.js                # Hover-badge link scanner
 │   ├── blocked.html              # Warning page for flagged sites
 │   ├── popup.html / popup.js     # phishlens-extension popup UI
-├── architecture.png              # System architecture diagram
+├── architecture_diagram.png              # System <img width="946" height="657" alt="image" src="https://github.com/user-attachments/assets/dfd26fb4-e886-485b-8f63-80fd506663ec" />diagram
 ├── evaluate_model.py             # Model evaluation & tuning script
 ├── .env.example                  # Environment template
 └── README.md
