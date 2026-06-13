@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "PhishLens AI Agent",
+  "version": "2.0",
+  "description": "Real-time autonomous phishing detection - auto-scans every page and blocks dangerous sites.",
+  "permissions": ["webNavigation", "storage", "tabs"],
+  "host_permissions": [
+    "http://localhost:5000/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhishLens</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    width: 320px;
+    background: #020408;
+    color: #c8dff0;
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+  }
+
+  /* Scanlines */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);
+    pointer-events:none; z-index:999;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0a1520, #0f1e2e);
+    border-bottom: 1px solid #1a3a5c;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-hex {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #00d4ff, #aa44ff);
+    clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100%{ box-shadow:0 0 8px rgba(0,212,255,0.4); }
+    50%{ box-shadow:0 0 20px rgba(0,212,255,0.8); }
+  }
+
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px; font-weight: 900;
+    background: linear-gradient(90deg, #00d4ff, #aa44ff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+  }
+
+  .agent-status {
+    margin-left: auto;
+    font-size: 9px;
+    color: #00ff88;
+    letter-spacing: 1px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #00ff88;
+    animation: blink 1.5s step-end infinite;
+    box-shadow: 0 0 6px #00ff88;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .current-url {
+    padding: 10px 16px;
+    background: #0a1520;
+    border-bottom: 1px solid #0e2a42;
+  }
+
+  .url-label {
+    font-size: 9px; color: #3a6a88; letter-spacing: 1px; margin-bottom: 4px;
+  }
+
+  .url-text {
+    font-size: 10px; color: #6a9ab8;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .scan-result {
+    padding: 16px;
+    text-align: center;
+    min-height: 100px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px;
+    position: relative;
+  }
+
+  .result-icon { font-size: 32px; }
+
+  .result-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px; font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .result-conf {
+    font-size: 11px; color: #6a9ab8;
+  }
+
+  .result-safe .result-label    { color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.5); }
+  .result-critical .result-label { color: #ff2244; text-shadow: 0 0 20px rgba(255,34,68,0.5); }
+  .result-high .result-label    { color: #ff8800; text-shadow: 0 0 20px rgba(255,136,0,0.5); }
+  .result-medium .result-label  { color: #ffdd00; text-shadow: 0 0 20px rgba(255,221,0,0.5); }
+  .result-unknown .result-label { color: #6a9ab8; }
+
+  .stats-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    border-top: 1px solid #0e2a42;
+    border-bottom: 1px solid #0e2a42;
+  }
+
+  .stat {
+    padding: 10px 8px; text-align: center;
+    border-right: 1px solid #0e2a42;
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px; font-weight: 700;
+    color: #00d4ff;
+  }
+
+  .stat-label {
+    font-size: 8px; color: #3a6a88;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+
+  .manual-scan {
+    padding: 12px 16px;
+    border-bottom: 1px solid #0e2a42;
+  }
+
+  .scan-label {
+    font-size: 9px; color: #3a6a88; letter-spacing: 1px; margin-bottom: 6px;
+  }
+
+  .scan-input-row {
+    display: flex; gap: 6px;
+  }
+
+  .scan-input {
+    flex: 1;
+    background: #0a1520;
+    border: 1px solid #1a3a5c;
+    color: #c8dff0;
+    padding: 6px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    outline: none;
+  }
+  .scan-input:focus { border-color: #00d4ff; }
+  .scan-input::placeholder { color: #3a6a88; }
+
+  .scan-btn {
+    background: linear-gradient(135deg, #006688, #004466);
+    border: 1px solid #00d4ff;
+    color: #00d4ff;
+    padding: 6px 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 9px; font-weight: 700;
+    cursor: pointer; letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .scan-btn:hover { background: #00d4ff; color: #000; }
+
+  .footer {
+    padding: 8px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 9px; color: #3a6a88;
+  }
+
+  .pipeline-tag {
+    color: #aa44ff; letter-spacing: 1px;
+  }
+
+  .loading {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid #1a3a5c;
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to{ transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-hex">🎣</div>
+  <div>
+    <div class="logo-text">PHISHLENS</div>
+  </div>
+  <div class="agent-status">
+    <div class="status-dot"></div>
+    AGENT ACTIVE
+  </div>
+</div>
+
+<div class="current-url">
+  <div class="url-label">CURRENT PAGE</div>
+  <div class="url-text" id="current-url">Loading...</div>
+</div>
+
+<div class="scan-result result-unknown" id="scan-result">
+  <div class="result-icon" id="result-icon">⬡</div>
+  <div class="result-label" id="result-label">SCANNING...</div>
+  <div class="result-conf" id="result-conf">Analyzing current page</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-val" id="stat-scanned">0</div>
+    <div class="stat-label">SCANNED</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" style="color:#ff4444" id="stat-blocked">0</div>
+    <div class="stat-label">BLOCKED</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" style="color:#00ff88" id="stat-safe">0</div>
+    <div class="stat-label">SAFE</div>
+  </div>
+</div>
+
+<div class="manual-scan">
+  <div class="scan-label">⬡ MANUAL URL SCAN</div>
+  <div class="scan-input-row">
+    <input class="scan-input" id="url-input" type="text" placeholder="https://suspicious-url.com">
+    <button class="scan-btn" id="scan-btn">SCAN</button>
+  </div>
+</div>
+
+<div class="footer">
+  <span>PhishLens AI Agent</span>
+  <span class="pipeline-tag">FETCH→SCORE→PROTECT</span>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

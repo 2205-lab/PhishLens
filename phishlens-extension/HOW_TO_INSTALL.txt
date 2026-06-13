@@ -1,0 +1,25 @@
+PhishLens Browser Extension — Installation Guide
+=================================================
+
+1. Open Google Chrome
+2. Go to: chrome://extensions/
+3. Enable "Developer mode" (top right toggle)
+4. Click "Load unpacked"
+5. Select this folder: phishlens-extension
+6. PhishLens icon appears in your toolbar!
+
+HOW IT WORKS:
+- Hover over any link → see safety badge (green/red/yellow)
+- Visit a CRITICAL phishing site → blocked page shown automatically
+- Click the PhishLens icon → scan current page + manual URL scanner
+- All scans use your local PhishLens AI model (server.py must be running)
+
+REQUIREMENTS:
+- server.py must be running on localhost:5000
+- Works on Chrome, Edge, Brave (any Chromium browser)
+
+DEMO:
+- Visit any page with links (Google search results, emails)
+- Hover over links to see PhishLens safety ratings
+- Try scanning: http://paypal-secure-login.xyz/verify
+  → Should show CRITICAL threat warning

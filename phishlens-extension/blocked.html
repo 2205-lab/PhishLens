@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PhishLens — Site Blocked</title>
+<style>
+  body {
+    font-family: -apple-system, Segoe UI, Arial, sans-serif;
+    background: #0d0000;
+    color: #fff;
+    text-align: center;
+    padding-top: 60px;
+    margin: 0;
+  }
+  .icon { font-size: 64px; }
+  h1 {
+    color: #ff3344;
+    font-size: 40px;
+    margin: 10px 0 5px;
+    letter-spacing: 1px;
+  }
+  .subtitle {
+    color: #ff8899;
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+  .card {
+    background: #1a0d0d;
+    border: 1px solid #ff3344;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 25px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #330000;
+    font-size: 14px;
+  }
+  .row:last-child { border-bottom: none; }
+  .label { color: #999; }
+  .value { color: #fff; font-weight: bold; }
+  .url {
+    font-family: monospace;
+    background: #330000;
+    padding: 10px;
+    border-radius: 6px;
+    word-break: break-all;
+    margin: 15px 0;
+    font-size: 13px;
+    color: #ffaaaa;
+  }
+  .risk-CRITICAL, .risk-HIGH { color: #ff3344; }
+  .risk-MEDIUM { color: #ffaa00; }
+  .buttons { margin-top: 25px; }
+  button {
+    padding: 12px 24px;
+    margin: 0 8px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .back { background: #00cc66; color: #000; }
+  .back:hover { background: #00e677; }
+  .proceed {
+    background: transparent;
+    color: #777;
+    border: 1px solid #444;
+  }
+  .proceed:hover { color: #aaa; border-color: #777; }
+  .footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+  <div class="icon">🛑</div>
+  <h1>DANGEROUS SITE BLOCKED</h1>
+  <div class="subtitle">PhishLens AI Agent prevented this page from loading</div>
+
+  <div class="card">
+    <div class="url" id="url"></div>
+    <div class="row">
+      <span class="label">Risk Level</span>
+      <span class="value" id="risk"></span>
+    </div>
+    <div class="row">
+      <span class="label">Model Confidence</span>
+      <span class="value" id="prob"></span>
+    </div>
+    <div class="row">
+      <span class="label">Recommended Action</span>
+      <span class="value">Do not enter credentials on this site</span>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="back" onclick="goBack()">⟵ Go Back to Safety</button>
+    <button class="proceed" onclick="proceed()">Proceed anyway (not recommended)</button>
+  </div>
+
+  <div class="footer">PhishLens AI Agent · Splunk ML Toolkit · Random Forest Classifier</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const url = params.get("url") || "";
+  const risk = params.get("risk") || "UNKNOWN";
+  const prob = parseFloat(params.get("prob") || "0");
+
+  document.getElementById("url").textContent = url;
+
+  const riskEl = document.getElementById("risk");
+  riskEl.textContent = risk;
+  riskEl.classList.add("risk-" + risk);
+
+  document.getElementById("prob").textContent = Math.round(prob * 100) + "% phishing probability";
+
+  function goBack() {
+    if (history.length > 1) {
+      history.back();
+    } else {
+      location.href = "https://www.google.com";
+    }
+  }
+
+  function proceed() {
+    // User explicitly chose to continue despite the warning.
+    // Navigate directly — this URL will be re-scored if visited again later.
+    window.location.href = url;
+  }
+</script>
+</body>
+</html>
