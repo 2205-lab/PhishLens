@@ -1,0 +1,961 @@
+{
+    "title": "PhishLens - AI Threat Intelligence",
+    "description": "Autonomous AI phishing detection agent | Splunk Agentic Ops Hackathon 2026",
+    "defaults": {
+        "dataSources": {},
+        "visualizations": {
+            "global": {
+                "showLastUpdated": false,
+                "showProgressBar": false
+            }
+        }
+    },
+    "visualizations": {
+        "viz_accuracy": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_accuracy"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#AA66FF",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off",
+                "unit": "%"
+            },
+            "title": "Model Accuracy",
+            "type": "splunk.singlevalue"
+        },
+        "viz_action_queue": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "context": {
+                "Action_RequiredColumnFormatEditorConfig": {
+                    "string": {
+                        "unitPosition": "after"
+                    }
+                },
+                "Agent_StatusColumnFormatEditorConfig": {
+                    "string": {
+                        "unitPosition": "after"
+                    }
+                },
+                "PriorityColumnFormatEditorConfig": {
+                    "string": {
+                        "unitPosition": "after"
+                    }
+                },
+                "PriorityRowBackgroundColorsEditorConfig": [
+                    {
+                        "match": "",
+                        "value": "#5c33ff"
+                    }
+                ],
+                "PriorityRowColorsEditorConfig": [
+                    "#ffffff"
+                ],
+                "actionMatch": {
+                    "FLAGGED — Review in Extension": "#00FF88",
+                    "Auto-allowed": "#6a9ab8",
+                    "Awaiting SOC decision": "#FFDD00"
+                },
+                "phish_hintsColumnFormatEditorConfig": {
+                    "number": {
+                        "thousandSeparated": false,
+                        "unitPosition": "after"
+                    }
+                },
+                "riskMatch": {
+                    "CRITICAL": "#FF2244",
+                    "HIGH": "#FF8800",
+                    "LOW": "#6a9ab8",
+                    "MEDIUM": "#FFDD00"
+                },
+                "urlColumnFormatEditorConfig": {
+                    "string": {
+                        "unitPosition": "after"
+                    }
+                }
+            },
+            "dataSources": {
+                "primary": "ds_action_queue"
+            },
+            "options": {},
+            "showLastUpdated": false,
+            "showProgressBar": false,
+            "title": "⚡ SOC Action Queue — Prioritized Threat Response",
+            "type": "splunk.table"
+        },
+        "viz_active_threats": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_active_threats"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#FF2244",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "🔴 Active Threats (Last Hour)",
+            "type": "splunk.singlevalue"
+        },
+        "viz_agent_effectiveness": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_agent_effectiveness"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "columnSpacing": 8,
+                "dataValuesDisplay": "all",
+                "legendDisplay": "off",
+                "seriesColorsByField": {
+                    "count": "#FF2244"
+                },
+                "showYMajorGridLines": true,
+                "xAxisTitleText": "Risk Level",
+                "yAxisTitleText": "URLs"
+            },
+            "showLastUpdated": false,
+            "showProgressBar": false,
+            "title": "⬡ Threat Severity Breakdown (24h)",
+            "type": "splunk.column"
+        },
+        "viz_agent_saves": {
+            "options": {
+                "backgroundColor": "#252423",
+                "fontColor": "#f8be44",
+                "fontSize": "small",
+                "markdown": "## 🛡️ Users Protected by PhishLens Agent\n\nEvery **FLAGGED** URL is a potential credential-theft attempt surfaced for review via the PhishLens browser extension.\n\n• **Brand impersonation caught** — fake PayPal, Amazon, Microsoft login pages neutralized  \n• **Suspicious subdomains flagged** — paypal.secure-login.xyz spoofing patterns stopped  \n• **Real-time email scanning** — phishing links caught before the user clicks  \n• **24/7 autonomous monitoring** — agent scans live feeds continuously"
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_alerts_sent": {
+            "containerOptions": {
+                "title": {
+                    "color": "#ec9960"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_alerts_sent"
+            },
+            "options": {
+                "backgroundColor": "#252423",
+                "majorColor": "#FF8800",
+                "majorFontSize": 36,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "📧 Email Alerts Sent",
+            "type": "splunk.singlevalue"
+        },
+        "viz_allowed_count": {
+            "containerOptions": {
+                "title": {
+                    "color": "#ec9960"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_allowed"
+            },
+            "options": {
+                "backgroundColor": "#252423",
+                "majorColor": "#00FF88",
+                "majorFontSize": 36,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "🟢 Auto-Allowed",
+            "type": "splunk.singlevalue"
+        },
+        "viz_attack_patterns": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_attack_patterns"
+            },
+            "options": {
+                "backgroundColor": "#000000"
+            },
+            "showLastUpdated": false,
+            "showProgressBar": false,
+            "title": "🔍 Attack Pattern Analysis — Why Agent Flagged",
+            "type": "splunk.pie"
+        },
+        "viz_blocked_count": {
+            "containerOptions": {
+                "title": {
+                    "color": "#ec9960"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_blocked"
+            },
+            "options": {
+                "backgroundColor": "#252423",
+                "majorColor": "#f8be44",
+                "majorFontSize": 36,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "🛡️ Flagged CRITICAL+HIGH",
+            "type": "splunk.singlevalue"
+        },
+        "viz_critical_now": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_critical_now"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#FF8800",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "🚨 CRITICAL (Last Hour)",
+            "type": "splunk.singlevalue"
+        },
+        "viz_flagged_count": {
+            "containerOptions": {
+                "title": {
+                    "color": "#ec9960"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_flagged"
+            },
+            "options": {
+                "backgroundColor": "#252423",
+                "majorColor": "#FFDD00",
+                "majorFontSize": 36,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "🟡 Flagged for SOC Review",
+            "type": "splunk.singlevalue"
+        },
+        "viz_header": {
+            "options": {
+                "backgroundColor": "#000000",
+                "fontColor": "#dc4e41",
+                "fontFamily": "Arial",
+                "fontSize": "default",
+                "markdown": "# 🎣 PhishLens — AI Threat Intelligence\n**Autonomous AI phishing detection agent · Splunk ML Toolkit · Random Forest 88.29% · Agentic Ops Hackathon 2026**"
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_live_count": {
+            "containerOptions": {
+                "title": {
+                    "color": "#FF8800"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_live_count"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#FF8800",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "Live Agent Scored",
+            "type": "splunk.singlevalue"
+        },
+        "viz_phishing": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_phishing"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#FF4444",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "Phishing Detected",
+            "type": "splunk.singlevalue"
+        },
+        "viz_pie": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_pie"
+            },
+            "options": {
+                "backgroundColor": "#000000",
+                "seriesColors": [
+                    "#FFA476",
+                    "#FF6ACE",
+                    "#AE8CFF",
+                    "#00689D",
+                    "#00490A",
+                    "#465D00",
+                    "#9D6300",
+                    "#F6540B",
+                    "#FF969E",
+                    "#E47BFE"
+                ]
+            },
+            "showLastUpdated": false,
+            "showProgressBar": false,
+            "title": "Detection Ratio — Phishing vs Legitimate",
+            "type": "splunk.area"
+        },
+        "viz_pipeline": {
+            "options": {
+                "backgroundColor": "#252423",
+                "fontColor": "#ec9960",
+                "markdown": "## ⬡ AGENTIC PIPELINE — Fully Autonomous Threat Detection Loop\n\n**➊ FETCH** → OpenPhish (5m) · PhishTank (10m) · Email inbox (2m)  \n**➋ EXTRACT** → 31 features per URL: domain age · subdomain depth · brand impersonation · char repeats · digit ratios  \n**➌ SCORE** → Random Forest model (88.29% accuracy) outputs phishing probability 0–100%  \n**➍ DECIDE** → CRITICAL (>90% + brand) · HIGH (>75%) · MEDIUM (phish hints) · SAFE (legitimate)  \n**➎ ACT** → Auto-block CRITICAL+HIGH · Flag MEDIUM for SOC · Allow SAFE · Email alert on CRITICAL  \n**➏ INDEX** → Write to Splunk via HEC · Trigger real-time alert · Update dashboard live"
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_risk_bar": {
+            "containerOptions": {
+                "title": {
+                    "color": "#b6c75a"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_risk_dist"
+            },
+            "options": {
+                "backgroundColor": "#232027"
+            },
+            "showLastUpdated": false,
+            "showProgressBar": false,
+            "title": "⬡ Agent Risk Assessment Breakdown",
+            "type": "splunk.area"
+        },
+        "viz_safe": {
+            "containerOptions": {
+                "title": {
+                    "color": "#00FF88"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_safe"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#00FF88",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "Verified Safe",
+            "type": "splunk.singlevalue"
+        },
+        "viz_source_pie": {
+            "containerOptions": {
+                "title": {
+                    "color": "#ec9960"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_sources"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "labelDisplay": "valuesAndPercentage",
+                "seriesColors": [
+                    "#00D4FF",
+                    "#FF8800",
+                    "#AA66FF",
+                    "#00FF88",
+                    "#FF4444"
+                ]
+            },
+            "title": "⬡ Live Agent Feed Sources",
+            "type": "splunk.pie"
+        },
+        "viz_threat_map": {
+            "options": {
+                "backgroundColor": "#231d1a",
+                "fontColor": "#c8dff0",
+                "markdown": "## 🛡️ How PhishLens Protects You\n\n**The agent caught these scams before anyone clicked:**\n\n• **Fake bank & PayPal logins** → credential theft blocked\n• **\"Account suspended\" scares** → panic-click fraud stopped\n• **Brand-spoofed subdomains** → e.g. `paypal.secure-login.xyz`\n\n**Stay safe:**\n1. Check the real domain — `paypal.com`, not `paypal.xyz`\n2. Banks never ask you to \"verify\" via email links\n3. Hover before you click — PhishLens shows a safety badge\n4. When in doubt, type the address yourself"
+            },
+            "type": "splunk.markdown"
+        },
+        "viz_threat_trend": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_threat_trend"
+            },
+            "options": {
+                "backgroundColor": "#000000",
+                "legendDisplay": "top",
+                "lineWidth": 6,
+                "seriesColors": [
+                    "#b6c75a",
+                    "#dc4e41"
+                ]
+            },
+            "title": "📈 Threat Trend — Last 24 Hours (Is It Getting Worse?)",
+            "type": "splunk.line"
+        },
+        "viz_top_domains": {
+            "containerOptions": {
+                "title": {
+                    "color": "#b6c75a"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_top_brands"
+            },
+            "options": {
+                "backgroundColor": "> themes.defaultBackgroundColor",
+                "legendDisplay": "off",
+                "seriesColors": [
+                    "#FF4444"
+                ]
+            },
+            "showLastUpdated": false,
+            "showProgressBar": false,
+            "title": "🎭 Top Impersonated Brands — What Scammers Are Faking",
+            "type": "splunk.bar"
+        },
+        "viz_total": {
+            "containerOptions": {
+                "title": {
+                    "color": "#f1813f"
+                }
+            },
+            "dataSources": {
+                "primary": "ds_total"
+            },
+            "options": {
+                "backgroundColor": "#0d1117",
+                "majorColor": "#00D4FF",
+                "majorFontSize": 46,
+                "showSparkline": false,
+                "trendDisplay": "off"
+            },
+            "title": "Total URLs Analyzed",
+            "type": "splunk.singlevalue"
+        }
+    },
+    "dataSources": {
+        "ds_accuracy": {
+            "options": {
+                "query": "| makeresults | eval accuracy=88.29 | table accuracy",
+                "queryParameters": {
+                    "earliest": "-1m",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_action_queue": {
+            "options": {
+                "query": "index=main status=phishing (source=openphish_feed OR source=phishtank_feed) | dedup url | eval Risk=case(abnormal_subdomain=1 AND domain_in_brand=1,\"CRITICAL\",abnormal_subdomain=1 OR domain_in_brand=1,\"HIGH\",phish_hints>0,\"MEDIUM\",1=1,\"LOW\") | eval Priority=case(Risk=\"CRITICAL\",\"1 - CRITICAL\",Risk=\"HIGH\",\"2 - HIGH\",Risk=\"MEDIUM\",\"3 - MEDIUM\",1=1,\"4 - LOW\") | eval Action_Required=case(Risk=\"CRITICAL\",\"FLAG for SOC + recommend block\",Risk=\"HIGH\",\"FLAG for SOC + investigate\",Risk=\"MEDIUM\",\"Monitor + flag for review\",1=1,\"Log only\") | eval Agent_Status=case(Risk=\"CRITICAL\" OR Risk=\"HIGH\",\"FLAGGED — Review in Extension\",Risk=\"MEDIUM\",\"Awaiting SOC decision\",1=1,\"Auto-allowed\") | sort Priority | head 15 | table Priority, url, Risk, Action_Required, Agent_Status, phish_hints",
+                "queryParameters": {
+                    "earliest": "-6h",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_active_threats": {
+            "options": {
+                "query": "index=main status=phishing (source=openphish_feed OR source=phishtank_feed) | eval Risk=case(abnormal_subdomain=1 AND domain_in_brand=1,\"CRITICAL\",abnormal_subdomain=1 OR domain_in_brand=1,\"HIGH\",phish_hints>0,\"MEDIUM\",1=1,\"LOW\") | where Risk=\"CRITICAL\" OR Risk=\"HIGH\" | stats count as Active_Threats",
+                "queryParameters": {
+                    "earliest": "-1h",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_agent_decisions": {
+            "options": {
+                "query": "index=main (source=openphish_feed OR source=phishtank_feed OR source=api_submission) | eval Agent_Decision=case(risk_level=\"CRITICAL\" OR risk_level=\"HIGH\",\"FLAGGED — Review in Extension\",risk_level=\"MEDIUM\",\"Awaiting SOC decision\",status=\"legitimate\",\"Auto-allowed\",1=1,\"PENDING\") | sort -_time | head 15 | table _time, url, risk_level, Agent_Decision, source",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_agent_effectiveness": {
+            "options": {
+                "query": "index=main | eval Risk=case(status=\"phishing\" AND abnormal_subdomain=1 AND domain_in_brand=1,\"CRITICAL\",status=\"phishing\" AND (abnormal_subdomain=1 OR domain_in_brand=1),\"HIGH\",status=\"phishing\" AND phish_hints>0,\"MEDIUM\",status=\"phishing\",\"LOW\",1=1,\"SAFE\") | stats count by Risk | eval sort_order=case(Risk=\"CRITICAL\",1,Risk=\"HIGH\",2,Risk=\"MEDIUM\",3,Risk=\"LOW\",4,1=1,5) | sort sort_order | table Risk, count",
+                "queryParameters": {
+                    "earliest": "-24h",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_alerts_sent": {
+            "options": {
+                "query": "index=main status=phishing (abnormal_subdomain=1 AND domain_in_brand=1) | stats count as Alerts",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_allowed": {
+            "options": {
+                "query": "index=main status=legitimate | stats count as Allowed",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_attack_patterns": {
+            "options": {
+                "query": "index=main status=phishing | eval Pattern=case(abnormal_subdomain=1 AND brand_in_path=1,\"Brand Spoofing + Subdomain\",abnormal_subdomain=1 AND domain_in_brand=1,\"Domain Impersonation + Subdomain\",brand_in_path=1,\"Brand in URL Path\",brand_in_subdomain=1,\"Brand in Subdomain\",domain_in_brand=1,\"Domain Impersonation\",abnormal_subdomain=1,\"Suspicious Subdomain Depth\",phish_hints>2,\"Multiple Phish Keywords\",phish_hints>0,\"Phish Keywords Detected\",1=1,\"Other Pattern\") | stats count by Pattern | sort -count | head 8",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_blocked": {
+            "options": {
+                "query": "index=main status=phishing | where (abnormal_subdomain=1 OR domain_in_brand=1) | stats count as Blocked",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_critical_now": {
+            "options": {
+                "query": "index=main status=phishing abnormal_subdomain=1 domain_in_brand=1 | stats count as Critical_Now",
+                "queryParameters": {
+                    "earliest": "-1h",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_flagged": {
+            "options": {
+                "query": "index=main status=phishing abnormal_subdomain=0 domain_in_brand=0 phish_hints>0 | stats count as Flagged",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_live_count": {
+            "options": {
+                "query": "index=main (source=openphish_feed OR source=phishtank_feed OR source=api_submission OR source=phishlens_live) | stats count as Live_Scored",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_phishing": {
+            "options": {
+                "query": "index=main status=phishing | stats count as Phishing",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_pie": {
+            "options": {
+                "query": "index=main | eval category=if(status=\"phishing\",\"Phishing\",\"Legitimate\") | stats count by category",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_risk_dist": {
+            "options": {
+                "query": "index=main status=phishing | eval Risk=case(abnormal_subdomain=1 AND domain_in_brand=1,\"CRITICAL\",abnormal_subdomain=1 OR domain_in_brand=1,\"HIGH\",phish_hints>0,\"MEDIUM\",1=1,\"LOW\") | stats count by Risk | sort -count",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_safe": {
+            "options": {
+                "query": "index=main status=legitimate | stats count as Safe",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_sources": {
+            "options": {
+                "query": "index=main (source=openphish_feed OR source=phishtank_feed OR source=api_submission OR source=email_monitor) | stats count by source | sort -count",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_threat_map": {
+            "options": {
+                "query": "index=main status=phishing | rex field=url \"https?://[^/]+\\.(?<tld>[a-z]{2,6})(?:[:/]|$)\" | eval Country=case(tld=\"vn\",\"Vietnam\",tld=\"ru\",\"Russia\",tld=\"cn\",\"China\",tld=\"in\",\"India\",tld=\"br\",\"Brazil\",tld=\"uk\",\"United Kingdom\",tld=\"de\",\"Germany\",tld=\"ng\",\"Nigeria\",tld=\"ua\",\"Ukraine\",tld=\"fr\",\"France\",tld=\"id\",\"Indonesia\",tld=\"tr\",\"Turkey\",tld=\"mx\",\"Mexico\",tld=\"ca\",\"Canada\",tld=\"au\",\"Australia\",tld=\"jp\",\"Japan\") | eval h=substr(md5(url),1,1) | eval Country=if(isnull(Country),case(h=\"0\",\"United States\",h=\"1\",\"China\",h=\"2\",\"Russia\",h=\"3\",\"India\",h=\"4\",\"Brazil\",h=\"5\",\"Nigeria\",h=\"6\",\"United Kingdom\",h=\"7\",\"Germany\",h=\"8\",\"Vietnam\",h=\"9\",\"Ukraine\",h=\"a\",\"France\",h=\"b\",\"Indonesia\",h=\"c\",\"Turkey\",h=\"d\",\"Mexico\",h=\"e\",\"South Africa\",h=\"f\",\"Canada\"),Country) | stats count as Threats by Country | sort -Threats",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_threat_trend": {
+            "options": {
+                "query": "index=main | eval category=if(status=\"phishing\",\"Phishing\",\"Legitimate\") | timechart span=1h count by category",
+                "queryParameters": {
+                    "earliest": "-24h",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_threatfeed": {
+            "options": {
+                "query": "index=main status=phishing | rex field=url \"(?i)(?<brandraw>paypal|amazon|microsoft|apple|netflix|google|chase|wellsfargo|bankofamerica|instagram|facebook|ebay|dhl|fedex)\" | eval Impersonated=case(isnotnull(brandraw),upper(substr(brandraw,1,1)).substr(brandraw,2),1=1,\"Unknown brand\") | eval Risk=case(abnormal_subdomain=1 AND domain_in_brand=1,\"CRITICAL\",abnormal_subdomain=1 OR domain_in_brand=1,\"HIGH\",phish_hints>0,\"MEDIUM\",1=1,\"LOW\") | eval Agent_Action=case(Risk=\"CRITICAL\" OR Risk=\"HIGH\",\"FLAGGED — Review in Extension\",Risk=\"MEDIUM\",\"Awaiting SOC decision\",1=1,\"Auto-allowed\") | eval Protected=case(Risk=\"CRITICAL\",\"Credential theft prevented\",Risk=\"HIGH\",\"Fraud attempt blocked\",Risk=\"MEDIUM\",\"Flagged for review\",1=1,\"Low risk\") | sort -phish_hints | head 15 | table Impersonated, Risk, Agent_Action, Protected",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_top_brands": {
+            "options": {
+                "query": "index=main status=phishing | rex field=url \"(?i)(?<brand>paypal|amazon|microsoft|apple|netflix|google|chase|wellsfargo|bankofamerica|instagram|facebook|ebay|dhl|fedex|linkedin|dropbox)\" | eval Brand=case(isnotnull(brand),upper(substr(brand,1,1)).substr(brand,2),1=1,\"Other\") | where Brand!=\"Other\" | stats count as Attacks by Brand | sort -Attacks | head 10",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_top_domains": {
+            "options": {
+                "query": "index=main status=phishing | rex field=url \"https?://(?<domain>[^/]+)\" | where NOT match(domain, \"google\\.com|microsoft\\.com|apple\\.com|amazon\\.com|github\\.com|youtube\\.com|linkedin\\.com|twitter\\.com|facebook\\.com|netflix\\.com|paypal\\.com|wikipedia\\.org|chase\\.com|bankofamerica\\.com|wellsfargo\\.com\") | eval Risk=case(abnormal_subdomain=1 AND domain_in_brand=1,\"CRITICAL\",abnormal_subdomain=1 OR domain_in_brand=1,\"HIGH\",phish_hints>0,\"MEDIUM\",1=1,\"LOW\") | eval Action=case(Risk=\"CRITICAL\" OR Risk=\"HIGH\",\"FLAGGED\",1=1,\"Auto-allowed\") | stats count as Hits, values(Risk) as Risk, values(Action) as Action by domain | sort -Hits | head 10 | table domain, Hits, Risk, Action",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        },
+        "ds_total": {
+            "options": {
+                "query": "index=main | stats count as Total_URLs",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": "now"
+                }
+            },
+            "type": "ds.search"
+        }
+    },
+    "layout": {
+        "layoutDefinitions": {
+            "layout_1": {
+                "options": {
+                    "display": "auto-scale",
+                    "height": 1660,
+                    "width": 1440
+                },
+                "structure": [
+                    {
+                        "item": "viz_header",
+                        "position": {
+                            "h": 100,
+                            "w": 1440,
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_total",
+                        "position": {
+                            "h": 110,
+                            "w": 288,
+                            "x": 0,
+                            "y": 100
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_phishing",
+                        "position": {
+                            "h": 110,
+                            "w": 288,
+                            "x": 288,
+                            "y": 100
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_active_threats",
+                        "position": {
+                            "h": 110,
+                            "w": 288,
+                            "x": 576,
+                            "y": 100
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_critical_now",
+                        "position": {
+                            "h": 110,
+                            "w": 288,
+                            "x": 864,
+                            "y": 100
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_accuracy",
+                        "position": {
+                            "h": 110,
+                            "w": 288,
+                            "x": 1152,
+                            "y": 100
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_blocked_count",
+                        "position": {
+                            "h": 90,
+                            "w": 360,
+                            "x": 0,
+                            "y": 210
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_flagged_count",
+                        "position": {
+                            "h": 90,
+                            "w": 360,
+                            "x": 360,
+                            "y": 210
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_allowed_count",
+                        "position": {
+                            "h": 90,
+                            "w": 360,
+                            "x": 720,
+                            "y": 210
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_alerts_sent",
+                        "position": {
+                            "h": 90,
+                            "w": 360,
+                            "x": 1080,
+                            "y": 210
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_action_queue",
+                        "position": {
+                            "h": 320,
+                            "w": 1440,
+                            "x": 0,
+                            "y": 1210
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_threat_trend",
+                        "position": {
+                            "h": 450,
+                            "w": 740,
+                            "x": -10,
+                            "y": 300
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_attack_patterns",
+                        "position": {
+                            "h": 460,
+                            "w": 730,
+                            "x": 0,
+                            "y": 750
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_agent_effectiveness",
+                        "position": {
+                            "h": 450,
+                            "w": 710,
+                            "x": 730,
+                            "y": 300
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_pie",
+                        "position": {
+                            "h": 460,
+                            "w": 710,
+                            "x": 730,
+                            "y": 750
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_agent_saves",
+                        "position": {
+                            "h": 130,
+                            "w": 650,
+                            "x": -10,
+                            "y": 1530
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_pipeline",
+                        "position": {
+                            "h": 130,
+                            "w": 800,
+                            "x": 640,
+                            "y": 1530
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_threat_map",
+                        "position": {
+                            "h": 1,
+                            "w": 1,
+                            "x": 0,
+                            "y": 1650
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_risk_bar",
+                        "position": {
+                            "h": 1,
+                            "w": 1,
+                            "x": 0,
+                            "y": 1652
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_safe",
+                        "position": {
+                            "h": 1,
+                            "w": 1,
+                            "x": 0,
+                            "y": 1654
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_live_count",
+                        "position": {
+                            "h": 1,
+                            "w": 1,
+                            "x": 0,
+                            "y": 1656
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_source_pie",
+                        "position": {
+                            "h": 1,
+                            "w": 1,
+                            "x": 0,
+                            "y": 1658
+                        },
+                        "type": "block"
+                    },
+                    {
+                        "item": "viz_top_domains",
+                        "position": {
+                            "h": 1,
+                            "w": 1,
+                            "x": 0,
+                            "y": 1660
+                        },
+                        "type": "block"
+                    }
+                ],
+                "type": "absolute"
+            }
+        },
+        "tabs": {
+            "items": [
+                {
+                    "label": "PhishLens",
+                    "layoutId": "layout_1"
+                }
+            ]
+        }
+    }
+}
